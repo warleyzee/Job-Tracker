@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date
 from uuid import UUID, uuid4
 
-from models.model_application import Application, ApplicationCreate
+from models.model_application import Application, ApplicationCreate, ApplicationStatus
 
 _APPLICATIONS_DB: dict[UUID, Application] = {}
 
@@ -53,3 +53,12 @@ def get_application(app_id: UUID) -> Application | None:
 def rest_storage() -> None:
     """Usado apenas em testes para limpar o storage em memória."""
     _APPLICATIONS_DB.clear()
+
+
+def update_status(app_id: UUID, new_status: ApplicationStatus) -> Application | None:
+    application = _APPLICATIONS_DB.get(app_id)
+    if application is None:
+        return None
+    updated = application.model_copy(update={"status": new_status})
+    _APPLICATIONS_DB[app_id] = updated
+    return updated

@@ -4,8 +4,13 @@ from datetime import date
 from enum import Enum
 from typing import Optional
 from uuid import UUID
+from pydantic import BaseModel
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+
+class ApplicationStatusUpdate(BaseModel):
+    status: ApplicationStatus
 
 
 class ApplicationStatus(str, Enum):
@@ -22,6 +27,13 @@ class ApplicationCreate(BaseModel):
     link: Optional[str] = None
     status: ApplicationStatus = ApplicationStatus.applied
     applied_date: Optional[date] = None
+
+    @field_validator("company", "role")
+    @classmethod
+    def must_not_be_blank(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("must not be empty or blank")
+        return value.strip()
 
 
 class Application(BaseModel):

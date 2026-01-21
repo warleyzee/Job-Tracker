@@ -1,14 +1,21 @@
 from __future__ import annotations
 
 from uuid import UUID
+from fastapi import HTTPException, status
+from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, status
 
-from models.model_application import Application, ApplicationCreate
+from models.model_application import (
+    Application,
+    ApplicationCreate,
+    ApplicationStatusUpdate,
+)
 from services.service_application import (
     create_application,
     list_application,
     get_application,
+    update_status,
 )
 
 
@@ -40,3 +47,13 @@ def get_by_id(app_id: UUID) -> Application:
             status_code=status.HTTP_404_NOT_FOUND, detail="Application not Found"
         )
     return application
+
+
+@router.patch("/{app_id}", response_model=Application)
+def patch_status(app_id: UUID, payload: ApplicationStatusUpdate) -> Application:
+    updated = update_status(app_id, payload.status)
+    if updated is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Applicaiton no Found"
+        )
+    return updated

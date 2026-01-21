@@ -1,6 +1,26 @@
 from fastapi.testclient import TestClient
 
 
+def test_create_application_fails_when_company_empty(client: TestClient) -> None:
+    payload = {"company": "", "role": "Backend Engeneer", "status": "applied"}
+
+    resp = client.post("/applications", json=payload)
+
+    assert resp.status_code == 422
+
+
+def test_create_application_fails_when_role_is_blank(client: TestClient) -> None:
+    payload = {
+        "company": "Stripe",
+        "role": "   ",
+        "status": "applied",
+    }
+
+    resp = client.post("/applications", json=payload)
+
+    assert resp.status_code == 422
+
+
 def test_create_application_returns_201_and_expected_json(client: TestClient) -> None:
     payload = {
         "company": "Stripe",
