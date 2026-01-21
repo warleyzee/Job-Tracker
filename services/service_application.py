@@ -48,3 +48,8 @@ def get_application(app_id: UUID) -> Application | None:
     - None se não existir (a rota converte isso para 404)
     """
     return _APPLICATIONS_DB.get(app_id)
+
+
+def rest_storage() -> None:
+    """Usado apenas em testes para limpar o storage em memória."""
+    _APPLICATIONS_DB.clear()
