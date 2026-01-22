@@ -15,7 +15,7 @@ class ApplicationStatusUpdate(BaseModel):
 
 class ApplicationStatus(str, Enum):
     applied = ("applied",)
-    screeening = ("screeening",)
+    screeening = ("screening",)
     interviwer = ("interviwer",)
     offer = ("offer",)
     rejected = ("rejected",)

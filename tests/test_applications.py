@@ -79,3 +79,27 @@ def test_get_by_id_returns_404_when_not_found(client: TestClient) -> None:
 
     assert resp.status_code == 404
     assert resp.json()["detail"] == "Application not Found"
+
+
+def test_metrics_return_counts_by_statys(client: TestClient) -> None:
+
+    client.post(
+        "/applications", json={"company": "A", "role": "R1", "status": "applied"}
+    )
+    client.post(
+        "/applications", json={"company": "B", "role": "R1", "status": "applied"}
+    )
+    client.post(
+        "/applications", json={"company": "C", "role": "R1", "status": "rejected"}
+    )
+
+    resp = client.get("/applications/metrics")
+    assert resp.status_code == 200
+
+    data = resp.json()
+    assert data["applied"] == 2
+    assert data["rejected"] == 1
+
+    assert "screening" in data
+    assert "interviwer" in data
+    assert "offer" in data

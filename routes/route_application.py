@@ -16,6 +16,7 @@ from services.service_application import (
     list_application,
     get_application,
     update_status,
+    get_metrics,
 )
 
 
@@ -36,6 +37,11 @@ def create(pyload: ApplicationCreate) -> Application:
 def list_all() -> list[Application]:
 
     return list_application()
+
+
+@router.get("/metrics")
+def metrics() -> dict[str, int]:
+    return get_metrics()
 
 
 @router.get("/{app_id}", response_model=Application)

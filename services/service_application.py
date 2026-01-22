@@ -62,3 +62,11 @@ def update_status(app_id: UUID, new_status: ApplicationStatus) -> Application | 
     updated = application.model_copy(update={"status": new_status})
     _APPLICATIONS_DB[app_id] = updated
     return updated
+
+
+def get_metrics() -> dict[str, int]:
+    metrics: dict[str, int] = {status.value: 0 for status in ApplicationStatus}
+
+    for app in _APPLICATIONS_DB.values():
+        metrics[app.status.value] += 1
+    return metrics
